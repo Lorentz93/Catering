@@ -51,6 +51,9 @@ Add CSV export summary
 Add product master file for input and validation
 """
 
+# Business Rule:
+# Every location has its own containers.
+# Update the container constant usign local data.
 
 # Business Rule:
 # Transaction is cancelled if scale disconnects.
@@ -122,7 +125,6 @@ current_weight = 0
 current_unit = "lb"
 
 last_weight_update = None
-
 
 def find_scale_port():
 
