@@ -1,4 +1,25 @@
-# https://selenium-python.readthedocs.io/ for documentation
+"""
+Bulk Report Extraction App
+
+Purpose:
+    Automatically extract the Hot Food Bulk Reports (production forecast) and store them as xsls.
+
+Author:
+    Lorentz Kremer
+
+Change Log
+------------------------------------------------
+v1.0 Initial app
+------------------------------------------------
+    
+Last Major Update:
+    2026-10-22
+
+
+TO DO:
+Remove login and PW from hard code to environment variables.
+"""
+
 import time
 from datetime import date, timedelta
 from pathlib import Path
