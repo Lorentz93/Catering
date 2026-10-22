@@ -54,32 +54,32 @@ driver.get("https://cbase.skychefs.com/Main")
 driver.implicitly_wait(10)
 
 # ==================================================
-#Step 1: Login into CBASE WEB
+#Step 1: Login into CBASE WEB => OK
 # ==================================================
 
-#username => OK
+#username
 username_box = driver.find_element(By.ID, value="TextBoxUsername")
 username_box.send_keys(LOGIN)
 
-#PW => OK
+#PW
 password_box = driver.find_element(By.ID, value="TextBoxPassword")
 password_box.send_keys(PW)
 
-#Login Button => OK
+#Login Button
 login_button = driver.find_element(By.ID, value="LoginButton")
 login_button.click()
 time.sleep(3)
 
 # ==================================================
-#Step 2: Get tomorrow's flight list and enter the item list
+#Step 2: Get tomorrow's flight list and enter the item list => OK
 # ==================================================
 
-#Open Bulk Browser => OK
+#Open Bulk Browser
 bulk_browser = driver.find_element(By.XPATH, value='//*[@id="bulkBrowser"]/a')
 bulk_browser.click()
 time.sleep(2)
 
-#Change Date 
+#Change Date
 WebDriverWait(driver, 20).until(
     EC.frame_to_be_available_and_switch_to_it(
         (By.ID, "mainiframe")
@@ -101,13 +101,13 @@ time.sleep(2)
 flight_checkmark = driver.find_element(By.XPATH, value='//*[@id="nactionrow"]/label')
 flight_checkmark.click()
 
-#Switch to Explosion Item Lists ab
+#Switch to Explosion Item Lists tab
 explosion_list = driver.find_element(By.XPATH, value='//*[@id="tabs"]/ul/li[2]')
 explosion_list.click()
 time.sleep(5)
 
 # ==================================================
-#Step 3: Get Hot Food items
+#Step 3: Get Hot Food items => OK
 # ==================================================
 
 # The production-group controls are in the third iframe nested inside mainiframe.
@@ -163,7 +163,7 @@ if production_group.get_attribute("value").strip() != "HOT FOOD ALL":
 
 
 # ==================================================
-#Step 4: Export the data
+#Step 4: Export the data => OK
 # ==================================================
 #Click export
 export_button = WebDriverWait(driver, 10).until(
@@ -192,7 +192,7 @@ shutil.copy2(downloaded_report, report_copy)
 print(f"Report copied to: {report_copy}")
 
 # ==================================================
-#Step 5: Logout & Close
+#Step 5: Logout & Close => OK
 # ==================================================
 driver.switch_to.default_content()
 logout_link = WebDriverWait(driver, 10).until(
@@ -201,6 +201,6 @@ logout_link = WebDriverWait(driver, 10).until(
     )
 )
 logout_link.click()
-# driver.quit() #Closes the browser, preferred
+driver.quit() #Closes the browser, preferred
 
 # driver.close() #Closes the tab
