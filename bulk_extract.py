@@ -187,7 +187,8 @@ downloaded_report = WebDriverWait(driver, 120).until(
         False,
     )
 )
-report_copy = SCRIPT_DIR / "bulk" / f"{tomorrow}_bulk_report.xlsx"
+date_file = (date.today() + timedelta(days=1)).strftime("%Y%m%d")
+report_copy = SCRIPT_DIR / "bulk" / f"{date_file}_bulk_report.xlsx"
 shutil.copy2(downloaded_report, report_copy)
 print(f"Report copied to: {report_copy}")
 
