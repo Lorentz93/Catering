@@ -39,6 +39,7 @@ v1.3 Added auto COM port detection
 v1.4 Added disconnect transaction cancellation
 v1.5 Fixed data innacuracies if scale gets disconnected
 v1.6 Add GUI
+v1.7 Store csv to a SharePoint folder
 ------------------------------------------------
     
 Last Major Update:
@@ -48,7 +49,8 @@ Last Major Update:
 TO DO:
 Add operator cancellation
 Add CSV export summary
-Add product master file for input and validation
+Add product master file for ItemCode input and validation
+Verify disconnection when scale is turned off, not just unplugged
 """
 
 # Business Rule:
@@ -81,13 +83,14 @@ from datetime import datetime, timedelta
 # =====================================================
 # CONFIG
 # =====================================================
-
-VERSION = "1.6"
+VERSION = "1.7"
 BAUD = 9600
 
 CONTAINERS = {
-    "Hotel Pan": 3.5,
-    "Half Pan": 2.8,
+    "Hotel Pan - Thick": 3.5,
+    "Hotel Pan - Thin": 2.5,
+    "Half Pan - Thick": 2.6,
+    "Half Pan - Thin": 2.2,
     "Sheet Pan": 2.0,
     "Others": 0.0
 }
@@ -96,25 +99,57 @@ CONTAINERS = {
 # DATA FILE
 # =====================================================
 
-data_folder = Path("scale/Data")
-data_folder.mkdir(parents=True, exist_ok=True)
+root = tk.Tk()
+root.withdraw()
+
+data_folder = (
+    Path.home()
+    / "SkyChefs"
+    / "jfk_d_1371_share - everyone_share"
+    / "LPS"
+    / "D1. Hot Food"
+    / "Scale"
+)
+
+if not data_folder.is_dir():
+    messagebox.showerror(
+        "SharePoint Folder Unavailable",
+        "The synced SharePoint Scale folder was not found:\n\n"
+        f"{data_folder}\n\n"
+        "Sync the folder to this computer with OneDrive, then restart "
+        "the app."
+    )
+    root.destroy()
+    raise SystemExit(1)
 
 csv_file = data_folder / f"weights_{datetime.now():%Y%m%d}.csv"
 
-if not csv_file.exists():
-    with open(csv_file, "w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow([
-            "Timestamp",
-            "ItemCode",
-            "TransactionType",
-            "Count",
-            "ContainerType",
-            "GrossWeight",
-            "TareWeight",
-            "NetWeight",
-            "Unit"
-        ])
+try:
+    if not csv_file.exists():
+        with open(csv_file, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                "Timestamp",
+                "ItemCode",
+                "TransactionType",
+                "Count",
+                "ContainerType",
+                "GrossWeight",
+                "TareWeight",
+                "NetWeight",
+                "Unit"
+            ])
+    else:
+        with open(csv_file, "a", newline=""):
+            pass
+except OSError as error:
+    messagebox.showerror(
+        "SharePoint Folder Unavailable",
+        "Could not access today's records file in the synced SharePoint "
+        f"folder:\n\n{csv_file}\n\n{error}"
+    )
+    root.destroy()
+    raise SystemExit(1)
 
 # =====================================================
 # SCALE COMMUNICATION
@@ -538,7 +573,7 @@ def update_transaction_type():
 # GUI
 # =====================================================
 
-root = tk.Tk()
+root.deiconify()
 
 root.title(
     f"Scale Capture System V{VERSION}"
